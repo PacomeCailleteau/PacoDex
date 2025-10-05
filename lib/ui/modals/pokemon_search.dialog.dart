@@ -14,10 +14,12 @@ class _PokemonSearchDialogState extends State<PokemonSearchDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -35,17 +37,17 @@ class _PokemonSearchDialogState extends State<PokemonSearchDialog> {
             ),
             TextField(
               controller: _controller,
-              style: const TextStyle(fontSize: 9),
+              style: const TextStyle(fontSize: 16),
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
                 hintText: 'Tapez pour rechercher (ex: Pikachu ou 025)',
-                hintStyle: const TextStyle(fontSize: 12),
+                hintStyle: const TextStyle(fontSize: 9),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: Colors.grey[200],
+                fillColor: theme.scaffoldBackgroundColor,
               ),
               onSubmitted: (value) {
                 widget.onSearch(value);

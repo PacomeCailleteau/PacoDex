@@ -46,7 +46,6 @@ class PokemonCardWidget extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final double imageMaxHeight = (constraints.maxHeight * 0.88).clamp(90.0, 260.0);
-            final double imageMaxWidth = (constraints.maxWidth * 0.40).clamp(90.0, 210.0);
 
             final double scale = (constraints.maxWidth / 300).clamp(0.5, 1.0);
             double s(double v) => v * scale;
@@ -97,52 +96,51 @@ class PokemonCardWidget extends StatelessWidget {
                     SizedBox(height: verticalGap),
                     Expanded(
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                for (int i = 0; i < pokemon.apiTypes.length; i++) ...[
-                                  _TypePill(
-                                    name: pokemon.apiTypes[i].name,
-                                    imageUrl: pokemon.apiTypes[i].image,
-                                    scale: scale,
-                                  ),
-                                  if (i != pokemon.apiTypes.length - 1) SizedBox(height: s(2)),
-                                ],
-                                const Spacer(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              for (int i = 0; i < pokemon.apiTypes.length; i++) ...[
+                                _TypePill(
+                                  name: pokemon.apiTypes[i].name,
+                                  imageUrl: pokemon.apiTypes[i].image,
+                                  scale: scale,
+                                ),
+                                if (i != pokemon.apiTypes.length - 1) SizedBox(height: s(4)),
                               ],
-                            ),
+                            ],
                           ),
-                          SizedBox(width: s(6)),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: Hero(
-                              tag: pokemon.id,
-                              child: SizedBox(
-                                height: imageMaxHeight,
-                                width: imageMaxWidth,
-                                child: FittedBox(
-                                  fit: BoxFit.contain,
-                                  alignment: Alignment.bottomRight,
-                                  child: CachedNetworkImage(
-                                    imageUrl: pokemon.image,
-                                    httpHeaders: const {
-                                      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                                    },
-                                    filterQuality: FilterQuality.high,
-                                    placeholder: (context, url) => Shimmer.fromColors(
-                                      baseColor: Colors.white.withOpacity(0.5),
-                                      highlightColor: Colors.white.withOpacity(0.9),
-                                      child: Container(
-                                        color: Colors.transparent,
+                          SizedBox(width: s(8)),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: Hero(
+                                tag: pokemon.id,
+                                child: SizedBox(
+                                  height: imageMaxHeight,
+                                  child: FittedBox(
+                                    fit: BoxFit.contain,
+                                    alignment: Alignment.bottomRight,
+                                    child: CachedNetworkImage(
+                                      imageUrl: pokemon.image,
+                                      httpHeaders: const {
+                                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                                      },
+                                      filterQuality: FilterQuality.high,
+                                      placeholder: (context, url) => Shimmer.fromColors(
+                                        baseColor: Colors.white.withOpacity(0.5),
+                                        highlightColor: Colors.white.withOpacity(0.9),
+                                        child: Container(
+                                          color: Colors.transparent,
+                                        ),
                                       ),
-                                    ),
-                                    errorWidget: (context, url, error) => Icon(
-                                      Icons.image_not_supported,
-                                      color: Colors.white.withOpacity(0.85),
-                                      size: (imageMaxHeight * 0.55).clamp(50, 140),
+                                      errorWidget: (context, url, error) => Icon(
+                                        Icons.image_not_supported,
+                                        color: Colors.white.withOpacity(0.85),
+                                        size: (imageMaxHeight * 0.55).clamp(50, 140),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -177,58 +175,48 @@ class _TypePill extends StatelessWidget {
     double s(double v) => v * scale;
     final pillPaddingH = s(10);
     final double pillPaddingV = s(5).clamp(4.0, 9.0).toDouble();
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        minWidth: s(70),
-        maxWidth: s(120),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: pillPaddingH, vertical: pillPaddingV),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(s(20)),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.55),
+          width: 1,
+        ),
       ),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: pillPaddingH, vertical: pillPaddingV),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(s(20)),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.55),
-            width: 1,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: s(18),
+            width: s(18),
+            child: CachedNetworkImage(
+              imageUrl: imageUrl,
+              httpHeaders: const {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+              },
+              color: Colors.white,
+              placeholder: (context, url) => Shimmer.fromColors(
+                baseColor: Colors.white.withOpacity(0.5),
+                highlightColor: Colors.white.withOpacity(0.9),
+                child: Container(color: Colors.transparent),
+              ),
+              errorWidget: (context, url, error) => const SizedBox(),
+            ),
           ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: s(18),
-              width: s(18),
-              child: CachedNetworkImage(
-                imageUrl: imageUrl,
-                httpHeaders: const {
-                  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                },
-                color: Colors.white,
-                placeholder: (context, url) => Shimmer.fromColors(
-                  baseColor: Colors.white.withOpacity(0.5),
-                  highlightColor: Colors.white.withOpacity(0.9),
-                  child: Container(color: Colors.transparent),
-                ),
-                errorWidget: (context, url, error) => const SizedBox(),
-              ),
+          SizedBox(width: s(8)),
+          Text(
+            capitalize(name),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: s(16),
+              letterSpacing: 0.2 * scale,
             ),
-            SizedBox(width: s(6)),
-            Flexible(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  capitalize(name),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: s(16),
-                    letterSpacing: 0.2 * scale,
-                  ),
-                  maxLines: 1,
-                ),
-              ),
-            ),
-          ],
-        ),
+            maxLines: 1,
+            softWrap: false,
+          ),
+        ],
       ),
     );
   }
