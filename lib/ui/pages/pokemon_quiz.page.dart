@@ -158,7 +158,7 @@ class _PokemonQuizPageState extends State<PokemonQuizPage> {
   Widget _buildPokemonImage() {
     final pokemon = _currentQuiz!.correctPokemon;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final silhouetteColor = isDarkMode ? Colors.white : Colors.black;
+    final silhouetteColor = isDarkMode ? Colors.grey[400] : Colors.black;
 
     final image = CachedNetworkImage(
       imageUrl: pokemon.image,
@@ -176,7 +176,7 @@ class _PokemonQuizPageState extends State<PokemonQuizPage> {
           : ColorFiltered(
               // Before answering, wrap in a filter for the silhouette effect.
               colorFilter: ColorFilter.mode(
-                silhouetteColor,
+                silhouetteColor!,
                 BlendMode.srcIn,
               ),
               child: image,
