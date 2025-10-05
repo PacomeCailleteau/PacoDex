@@ -38,6 +38,7 @@ class Pokemon {
     this.flavorText,
     this.cry,
     this.apiResistances,
+    this.isFavorite = false,
   });
 
   @JsonKey(defaultValue: 0)
@@ -74,6 +75,9 @@ class Pokemon {
   @JsonKey(defaultValue: [])
   final List<PokemonResistance>? apiResistances;
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final bool isFavorite;
+
   factory Pokemon.fromJson(Map<String, dynamic> json) => _$PokemonFromJson(json);
 
   Map<String, dynamic> toJson() => _$PokemonToJson(this);
@@ -84,6 +88,7 @@ class Pokemon {
     String? flavorText,
     String? cry,
     List<PokemonResistance>? apiResistances,
+    bool? isFavorite,
   }) {
     return Pokemon(
       id: id,
@@ -100,6 +105,7 @@ class Pokemon {
       flavorText: flavorText ?? this.flavorText,
       cry: cry ?? this.cry,
       apiResistances: apiResistances ?? this.apiResistances,
+      isFavorite: isFavorite ?? this.isFavorite,
     );
   }
 
@@ -123,5 +129,6 @@ class Pokemon {
         flavorText: 'Un Pokémon de test pour les maquettes.',
         cry: 'https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/1.ogg',
         apiResistances: [],
+        isFavorite: false,
       );
 }

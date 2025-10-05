@@ -14,7 +14,7 @@ class PokemonQuiz {
 }
 
 
-enum FetchType { generation, type, favorites }
+enum FetchType { generation, type, favorites, search }
 
 class PokemonsCubit extends Cubit<PokemonsState> {
   final PokemonService _pokemonService;
@@ -26,6 +26,7 @@ class PokemonsCubit extends Cubit<PokemonsState> {
   FetchType _lastFetchType = FetchType.generation;
   int _lastGeneration = 1;
   String _lastType = '';
+  String _lastSearchQuery = '';
 
   FetchType get lastFetchType => _lastFetchType;
   int get lastGeneration => _lastGeneration;
@@ -42,12 +43,21 @@ class PokemonsCubit extends Cubit<PokemonsState> {
     }
   }
 
+  Future<List<Pokemon>> _applyFavoritesStatus(List<Pokemon> pokemons) async {
+    final favoriteIds = await _favoritesService.getFavoriteIds();
+    return [
+      for (final pokemon in pokemons)
+        pokemon.copyWith(isFavorite: favoriteIds.contains(pokemon.id))
+    ];
+  }
+
   Future<void> fetchPokemonsByGeneration(int generation) async {
     _lastFetchType = FetchType.generation;
     _lastGeneration = generation;
     emit(PokemonsLoading());
     try {
-      final pokemons = await _pokemonService.getByGeneration(generation);
+      var pokemons = await _pokemonService.getByGeneration(generation);
+      pokemons = await _applyFavoritesStatus(pokemons);
       _pokemonsForCurrentFilter = pokemons;
       emit(PokemonsLoaded(pokemons));
     } catch (e) {
@@ -60,7 +70,8 @@ class PokemonsCubit extends Cubit<PokemonsState> {
     _lastType = type;
     emit(PokemonsLoading());
     try {
-      final pokemons = await _pokemonService.getByType(type);
+      var pokemons = await _pokemonService.getByType(type);
+      pokemons = await _applyFavoritesStatus(pokemons);
       _pokemonsForCurrentFilter = pokemons;
       emit(PokemonsLoaded(pokemons));
     } catch (e) {
@@ -69,12 +80,13 @@ class PokemonsCubit extends Cubit<PokemonsState> {
   }
 
   Future<void> fetchFavoritePokemons() async {
-    _lastFetchType = FetchType.favorites;
     emit(PokemonsLoading());
     try {
-      final pokemons = await _favoritesService.getFavoritePokemons();
-      _pokemonsForCurrentFilter = pokemons;
-      emit(PokemonsLoaded(pokemons));
+      final favoriteIds = await _favoritesService.getFavoriteIds();
+      final pokemons = _fullPokemonList.where((p) => favoriteIds.contains(p.id)).toList();
+      final favoritePokemons = await _applyFavoritesStatus(pokemons);
+      // Do not update the _pokemonsForCurrentFilter here, as this is a separate view
+      emit(PokemonsLoaded(favoritePokemons));
     } catch (e) {
       emit(PokemonsError(e.toString()));
     }
@@ -83,27 +95,41 @@ class PokemonsCubit extends Cubit<PokemonsState> {
   Future<void> refreshCurrentView() async {
     if (state is PokemonsLoading) return;
 
-    if (_lastFetchType == FetchType.favorites) {
-      await fetchFavoritePokemons();
-    } else if (_lastFetchType == FetchType.generation) {
-      await fetchPokemonsByGeneration(_lastGeneration);
-    } else if (_lastFetchType == FetchType.type) {
-      await fetchPokemonsByType(_lastType);
+    switch (_lastFetchType) {
+      // No 'favorites' case here, because we don't want to change the main screen's state
+      case FetchType.generation:
+        await fetchPokemonsByGeneration(_lastGeneration);
+        break;
+      case FetchType.type:
+        await fetchPokemonsByType(_lastType);
+        break;
+      case FetchType.search:
+        await searchPokemons(_lastSearchQuery);
+        break;
+      default:
+        await fetchPokemonsByGeneration(1); // Fallback to the default view
     }
   }
 
-  void searchPokemons(String query) {
+  Future<void> searchPokemons(String query) async {
     if (query.isEmpty) {
-      emit(PokemonsLoaded(_pokemonsForCurrentFilter));
+      await refreshCurrentView();
       return;
     }
 
+    _lastFetchType = FetchType.search;
+    _lastSearchQuery = query;
+    emit(PokemonsLoading());
+
     final lowerCaseQuery = query.toLowerCase();
-    final results = _fullPokemonList.where((pokemon) {
+    var results = _fullPokemonList.where((pokemon) {
       final formattedPokedexId = pokemon.pokedexId.toString().padLeft(3, '0');
       return pokemon.name.toLowerCase().contains(lowerCaseQuery) ||
           formattedPokedexId.contains(lowerCaseQuery);
     }).toList();
+
+    results = await _applyFavoritesStatus(results);
+    _pokemonsForCurrentFilter = results;
 
     emit(PokemonsLoaded(results));
   }
@@ -127,5 +153,12 @@ class PokemonsCubit extends Cubit<PokemonsState> {
     final correctPokemon = options[random.nextInt(4)];
     options.shuffle();
     return PokemonQuiz(correctPokemon: correctPokemon, options: options);
+  }
+
+  Future<void> toggleFavorite(Pokemon pokemon) async {
+    await _favoritesService.toggleFavorite(pokemon.id);
+    final updatedPokemons = await _applyFavoritesStatus(_pokemonsForCurrentFilter);
+    _pokemonsForCurrentFilter = updatedPokemons;
+    emit(PokemonsLoaded(updatedPokemons));
   }
 }

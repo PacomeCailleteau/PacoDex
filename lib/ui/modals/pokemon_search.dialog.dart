@@ -31,7 +31,7 @@ class _PokemonSearchDialogState extends State<PokemonSearchDialog> {
               height: 5,
               margin: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: theme.dividerColor,
                 borderRadius: BorderRadius.circular(10),
               ),
             ),

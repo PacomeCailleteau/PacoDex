@@ -8,6 +8,7 @@ import 'package:pokedex_app/ui/cubits/pokemons.state.dart';
 import 'package:pokedex_app/ui/modals/pokemon_generations.dialog.dart';
 import 'package:pokedex_app/ui/modals/pokemon_search.dialog.dart';
 import 'package:pokedex_app/ui/modals/pokemon_types.dialog.dart';
+import 'package:pokedex_app/ui/pages/favorites_page.dart';
 import 'package:pokedex_app/ui/pages/pokemon_details.page.dart';
 import 'package:pokedex_app/ui/pages/pokemon_quiz.page.dart';
 import 'package:pokedex_app/ui/pages/settings_page.dart';
@@ -223,7 +224,20 @@ class _HomeState extends State<Home> {
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
             label: 'Favoris',
-            onTap: () => context.read<PokemonsCubit>().fetchFavoritePokemons(),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<PokemonsCubit>(),
+                    child: const FavoritesPage(),
+                  ),
+                ),
+              ).then((_) {
+                // When coming back from favorites, refresh the home screen to its previous state
+                context.read<PokemonsCubit>().refreshCurrentView();
+              });
+            },
           ),
           SpeedDialChild(
             child: const Icon(Icons.catching_pokemon),

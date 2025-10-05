@@ -19,14 +19,14 @@ class SettingsPage extends StatelessWidget {
             TextButton(
               child: const Text('Annuler'),
               onPressed: () {
-                Navigator.of(dialogContext).pop(); // Close the dialog
+                Navigator.of(dialogContext).pop();
               },
             ),
             TextButton(
               child: const Text('Vider'),
               onPressed: () async {
                 await PokemonService().clearCache();
-                Navigator.of(dialogContext).pop(); // Close the dialog
+                Navigator.of(dialogContext).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Le cache a été vidé.'),

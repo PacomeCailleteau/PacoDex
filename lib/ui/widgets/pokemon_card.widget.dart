@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,9 +47,16 @@ class PokemonCardWidget extends StatelessWidget {
         ),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final double imageMaxHeight = (constraints.maxHeight * 0.88).clamp(90.0, 260.0);
+            double scale;
+            final bool isListMode = constraints.hasBoundedHeight && constraints.maxWidth / constraints.maxHeight > 2.5;
 
-            final double scale = (constraints.maxWidth / 300).clamp(0.5, 1.0);
+            if (constraints.hasBoundedHeight) {
+              final double scaleW = (constraints.maxWidth / (isListMode ? 400 : 300)).clamp(0.5, 1.2);
+              final double scaleH = (constraints.maxHeight / 140).clamp(0.5, 1.2);
+              scale = min(scaleW, scaleH);
+            } else {
+              scale = (constraints.maxWidth / 300).clamp(0.5, 1.0);
+            }
             double s(double v) => v * scale;
 
             final nameStyle = TextStyle(
@@ -98,49 +107,62 @@ class PokemonCardWidget extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              for (int i = 0; i < pokemon.apiTypes.length; i++) ...[
-                                _TypePill(
-                                  name: pokemon.apiTypes[i].name,
-                                  imageUrl: pokemon.apiTypes[i].image,
-                                  scale: scale,
+                          isListMode
+                              ? Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    for (int i = 0; i < pokemon.apiTypes.length; i++) ...[
+                                      _TypePill(
+                                        name: pokemon.apiTypes[i].name,
+                                        imageUrl: pokemon.apiTypes[i].image,
+                                        scale: scale,
+                                      ),
+                                      if (i != pokemon.apiTypes.length - 1) SizedBox(width: s(4)),
+                                    ],
+                                  ],
+                                )
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    for (int i = 0; i < pokemon.apiTypes.length; i++) ...[
+                                      _TypePill(
+                                        name: pokemon.apiTypes[i].name,
+                                        imageUrl: pokemon.apiTypes[i].image,
+                                        scale: scale,
+                                      ),
+                                      if (i != pokemon.apiTypes.length - 1) SizedBox(height: s(4)),
+                                    ],
+                                  ],
                                 ),
-                                if (i != pokemon.apiTypes.length - 1) SizedBox(height: s(4)),
-                              ],
-                            ],
-                          ),
                           SizedBox(width: s(8)),
                           Expanded(
                             child: Align(
                               alignment: Alignment.bottomRight,
                               child: Hero(
                                 tag: pokemon.id,
-                                child: SizedBox(
-                                  height: imageMaxHeight,
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    alignment: Alignment.bottomRight,
-                                    child: CachedNetworkImage(
-                                      imageUrl: pokemon.image,
-                                      httpHeaders: const {
-                                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                                      },
-                                      filterQuality: FilterQuality.high,
-                                      placeholder: (context, url) => Shimmer.fromColors(
-                                        baseColor: Colors.white.withOpacity(0.5),
-                                        highlightColor: Colors.white.withOpacity(0.9),
-                                        child: Container(
-                                          color: Colors.transparent,
-                                        ),
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  alignment: Alignment.bottomRight,
+                                  child: CachedNetworkImage(
+                                    imageUrl: pokemon.image,
+                                    httpHeaders: const {
+                                      'User-Agent':
+                                          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                                    },
+                                    filterQuality: FilterQuality.high,
+                                    placeholder: (context, url) => Shimmer.fromColors(
+                                      baseColor: Colors.white.withOpacity(0.5),
+                                      highlightColor: Colors.white.withOpacity(0.9),
+                                      child: Container(
+                                        color: Colors.transparent,
                                       ),
-                                      errorWidget: (context, url, error) => Icon(
-                                        Icons.image_not_supported,
-                                        color: Colors.white.withOpacity(0.85),
-                                        size: (imageMaxHeight * 0.55).clamp(50, 140),
-                                      ),
+                                    ),
+                                    errorWidget: (context, url, error) => Icon(
+                                      Icons.image_not_supported,
+                                      color: Colors.white.withOpacity(0.85),
+                                      size: s(100),
                                     ),
                                   ),
                                 ),
@@ -193,7 +215,8 @@ class _TypePill extends StatelessWidget {
             child: CachedNetworkImage(
               imageUrl: imageUrl,
               httpHeaders: const {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'User-Agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
               },
               color: Colors.white,
               placeholder: (context, url) => Shimmer.fromColors(

@@ -7,7 +7,6 @@ class AppTheme {
       visualDensity: VisualDensity.adaptivePlatformDensity,
       brightness: Brightness.light,
       fontFamily: 'Orbitron',
-      // Define other light theme properties here
     );
   }
 
@@ -17,7 +16,6 @@ class AppTheme {
       visualDensity: VisualDensity.adaptivePlatformDensity,
       brightness: Brightness.dark,
       fontFamily: 'Orbitron',
-      // Define other dark theme properties here
     );
   }
 }
