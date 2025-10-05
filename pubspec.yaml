@@ -1,0 +1,58 @@
+name: pokedex_app
+description: "PacôDex"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_speed_dial: ^7.0.0
+  json_annotation: ^4.9.0
+  http: ^1.2.1
+  shared_preferences: ^2.2.3
+  flutter_bloc: ^8.1.6
+  equatable: ^2.0.5
+  audioplayers: ^6.0.0
+  shimmer: ^3.0.0
+  cached_network_image: ^3.3.1
+  flutter_staggered_animations: ^1.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.11
+  json_serializable: ^6.8.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/fonts/
+  fonts:
+    - family: Orbitron
+      fonts:
+        - asset: assets/fonts/Pokemon-Orbitron/static/Orbitron-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Pokemon-Orbitron/static/Orbitron-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Pokemon-Orbitron/static/Orbitron-Black.ttf
+          weight: 900
+        - asset: assets/fonts/Pokemon-Orbitron/static/Orbitron-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Pokemon-Orbitron/static/Orbitron-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Pokemon-Orbitron/static/Orbitron-ExtraBold.ttf
+          weight: 800
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/images/pacodex_logo.png"
+  min_sdk_android: 21
