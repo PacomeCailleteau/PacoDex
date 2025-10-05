@@ -6,9 +6,13 @@ class PokemonDetailsSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final baseColor = isDarkMode ? Colors.grey[800]! : Colors.grey[300]!;
+    final highlightColor = isDarkMode ? Colors.grey[700]! : Colors.grey[100]!;
+
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: baseColor,
+      highlightColor: highlightColor,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         physics: const NeverScrollableScrollPhysics(),
@@ -57,9 +61,11 @@ class PokemonDetailsSkeleton extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 8),
               child: Row(
                 children: [
-                  Container(width: 60, height: 16, color: Colors.white),
+                  Container(width: 70, height: 16, color: Colors.white),
                   const SizedBox(width: 8),
-                  Expanded(child: Container(height: 12, color: Colors.white)),
+                  Container(width: 40, height: 16, color: Colors.white),
+                  const SizedBox(width: 8),
+                  Expanded(child: Container(height: 10, color: Colors.white)),
                 ],
               ),
             )),

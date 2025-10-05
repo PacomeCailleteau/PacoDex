@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:pokedex_app/data/api/pokemon.service.dart';
 import 'package:pokedex_app/data/model/pokemon.model.dart';
 import 'package:shared_preferences/shared_preferences.dart';

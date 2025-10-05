@@ -140,9 +140,8 @@ class _PokemonDetailsPageState extends State<PokemonDetailsPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const BackButtonIcon(),
-          color: Colors.white,
-          onPressed: () => Navigator.maybePop(context),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
           tooltip: 'Précédent',
         ),
         actions: [
@@ -232,9 +231,9 @@ class _PokemonDetailsPageState extends State<PokemonDetailsPage> {
   }) {
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
       ),
       child: isLoading
           ? const PokemonDetailsSkeleton()
@@ -378,6 +377,15 @@ class _ResistanceIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = getColorForType(resistance.name.toLowerCase());
+    Color multiplierColor;
+    if (resistance.damage_multiplier > 1) {
+      multiplierColor = Colors.red;
+    } else if (resistance.damage_multiplier < 1) {
+      multiplierColor = Colors.green;
+    } else {
+      multiplierColor = Theme.of(context).textTheme.bodyLarge?.color ?? (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black);
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -408,9 +416,7 @@ class _ResistanceIcon extends StatelessWidget {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,
-            color: resistance.damage_multiplier > 1
-                ? Colors.red
-                : (resistance.damage_multiplier < 1 ? Colors.green : Colors.black),
+            color: multiplierColor,
           ),
         ),
       ],

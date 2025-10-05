@@ -39,7 +39,7 @@ class _PokemonSearchDialogState extends State<PokemonSearchDialog> {
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
                 hintText: 'Tapez pour rechercher (ex: Pikachu ou 025)',
-                hintStyle: const TextStyle(fontSize: 9),
+                hintStyle: const TextStyle(fontSize: 12),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30.0),
                   borderSide: BorderSide.none,

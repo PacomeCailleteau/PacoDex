@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class PokemonStatWidget extends StatefulWidget {
+class PokemonStatWidget extends StatelessWidget {
   final String label;
   final int value;
   final int maxValue;
@@ -15,57 +15,40 @@ class PokemonStatWidget extends StatefulWidget {
   });
 
   @override
-  State<PokemonStatWidget> createState() => _PokemonStatWidgetState();
-}
-
-class _PokemonStatWidgetState extends State<PokemonStatWidget> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-
-    _animation = Tween<double>(begin: 0, end: widget.value.toDouble()).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return Row(
-          children: [
-            SizedBox(width: 80, child: Text(widget.label)),
-            SizedBox(width: 40, child: Text(widget.value.toString().padLeft(3, '0'))),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: LinearProgressIndicator(
-                  value: _animation.value / widget.maxValue,
-                  color: widget.color,
-                  backgroundColor: widget.color.withOpacity(0.2),
-                  minHeight: 8,
-                ),
+    final double ratio = value / maxValue;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 70,
+            child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+          ),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 40,
+            child: Text(
+              value.toString(),
+              textAlign: TextAlign.right,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: LinearProgressIndicator(
+                value: ratio,
+                backgroundColor: color.withOpacity(0.2),
+                color: color,
+                minHeight: 10,
               ),
             ),
-          ],
-        );
-      },
+          ),
+        ],
+      ),
     );
   }
 }

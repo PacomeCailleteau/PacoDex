@@ -50,6 +50,7 @@ class PokemonTypeWidget extends StatelessWidget {
             style: TextStyle(
               color: color,
               fontWeight: FontWeight.bold,
+              fontSize: 14,
             ),
           ),
         ],

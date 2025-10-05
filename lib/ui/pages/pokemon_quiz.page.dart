@@ -33,7 +33,7 @@ class _PokemonQuizPageState extends State<PokemonQuizPage> {
       _score = 0;
       _lives = 3;
       _isGameOver = false;
-      _currentQuiz = null;
+      _currentQuiz = null; // Show loader while we fetch the first quiz
     });
     _loadNewQuiz();
   }
@@ -72,8 +72,9 @@ class _PokemonQuizPageState extends State<PokemonQuizPage> {
       }
     });
 
+    // Wait 2 seconds before moving on
     Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
+      if (!mounted) return; // Guard against calling setState on an unmounted widget
 
       if (_lives == 0) {
         setState(() {
@@ -156,6 +157,8 @@ class _PokemonQuizPageState extends State<PokemonQuizPage> {
 
   Widget _buildPokemonImage() {
     final pokemon = _currentQuiz!.correctPokemon;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final silhouetteColor = isDarkMode ? Colors.white : Colors.black;
 
     final image = CachedNetworkImage(
       imageUrl: pokemon.image,
@@ -169,10 +172,11 @@ class _PokemonQuizPageState extends State<PokemonQuizPage> {
 
     return Expanded(
       child: _answered
-          ? image
+          ? image // After answering, show the raw image.
           : ColorFiltered(
-              colorFilter: const ColorFilter.mode(
-                Colors.black,
+              // Before answering, wrap in a filter for the silhouette effect.
+              colorFilter: ColorFilter.mode(
+                silhouetteColor,
                 BlendMode.srcIn,
               ),
               child: image,

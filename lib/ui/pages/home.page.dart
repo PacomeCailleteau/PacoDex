@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:pokedex_app/data/api/favorites.service.dart';
-import 'package:pokedex_app/data/api/pokemon.service.dart';
 import 'package:pokedex_app/data/model/pokemon.model.dart';
 import 'package:pokedex_app/ui/cubits/pokemons.cubit.dart';
 import 'package:pokedex_app/ui/cubits/pokemons.state.dart';
@@ -12,35 +10,22 @@ import 'package:pokedex_app/ui/modals/pokemon_search.dialog.dart';
 import 'package:pokedex_app/ui/modals/pokemon_types.dialog.dart';
 import 'package:pokedex_app/ui/pages/pokemon_details.page.dart';
 import 'package:pokedex_app/ui/pages/pokemon_quiz.page.dart';
+import 'package:pokedex_app/ui/pages/settings_page.dart';
 import 'package:pokedex_app/ui/widgets/empty_state.widget.dart';
 import 'package:pokedex_app/ui/widgets/pokemon_card_skeleton.widget.dart';
 
 import '../widgets/pokemon_card.widget.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key, required this.title});
 
   final String title;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PokemonsCubit(PokemonService(), FavoritesService()),
-      child: _HomeView(title: title),
-    );
-  }
+  State<Home> createState() => _HomeState();
 }
 
-class _HomeView extends StatefulWidget {
-  const _HomeView({required this.title});
-
-  final String title;
-
-  @override
-  State<_HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<_HomeView> {
+class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
@@ -72,15 +57,33 @@ class _HomeViewState extends State<_HomeView> {
         return true;
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFFCF6F6),
         appBar: AppBar(
           title: GestureDetector(
             onTap: () => cubit.fetchPokemonsByGeneration(1),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 4.0),
-              child: Text(widget.title),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.asset('assets/images/pacodex_logo.png', height: 32),
+                ),
+                const SizedBox(width: 12),
+                Text(widget.title),
+              ],
             ),
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SettingsPage()),
+                );
+              },
+              tooltip: 'Paramètres',
+            ),
+          ],
         ),
         body: BlocBuilder<PokemonsCubit, PokemonsState>(
           builder: (context, state) {

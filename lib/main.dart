@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pokedex_app/data/api/favorites.service.dart';
+import 'package:pokedex_app/data/api/pokemon.service.dart';
+import 'package:pokedex_app/ui/cubits/pokemons.cubit.dart';
+import 'package:pokedex_app/ui/cubits/theme.cubit.dart';
 import 'package:pokedex_app/ui/pages/home.page.dart';
+import 'package:pokedex_app/ui/theme/app_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,15 +19,25 @@ class MyPokedexApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PacôDex',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'Orbitron',
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(
+          create: (_) => PokemonsCubit(PokemonService(), FavoritesService()),
+        ),
+      ],
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, themeMode) {
+          return MaterialApp(
+            title: 'PacôDex',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeMode,
+            home: const Home(title: 'PacôDex'),
+          );
+        },
       ),
-      home: const Home(title: 'PacôDex'),
     );
   }
 }

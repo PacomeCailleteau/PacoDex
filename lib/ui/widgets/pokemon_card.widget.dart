@@ -52,13 +52,13 @@ class PokemonCardWidget extends StatelessWidget {
             double s(double v) => v * scale;
 
             final nameStyle = TextStyle(
-              fontSize: s(18),
-              fontWeight: FontWeight.w700,
+              fontSize: s(28),
+              fontWeight: FontWeight.w800,
               color: Colors.white,
               letterSpacing: 0.5 * scale,
             );
             final idStyle = TextStyle(
-              fontSize: s(12),
+              fontSize: s(24),
               color: Colors.white.withOpacity(0.92),
               fontWeight: FontWeight.w600,
               letterSpacing: 0.4 * scale,
@@ -109,7 +109,7 @@ class PokemonCardWidget extends StatelessWidget {
                                     imageUrl: pokemon.apiTypes[i].image,
                                     scale: scale,
                                   ),
-                                  if (i != pokemon.apiTypes.length - 1) SizedBox(height: s(6)),
+                                  if (i != pokemon.apiTypes.length - 1) SizedBox(height: s(2)),
                                 ],
                                 const Spacer(),
                               ],
@@ -175,12 +175,12 @@ class _TypePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double s(double v) => v * scale;
-    final pillPaddingH = s(8);
-    final double pillPaddingV = s(4).clamp(3.0, 8.0).toDouble();
+    final pillPaddingH = s(10);
+    final double pillPaddingV = s(5).clamp(4.0, 9.0).toDouble();
     return ConstrainedBox(
       constraints: BoxConstraints(
-        minWidth: s(60),
-        maxWidth: s(110),
+        minWidth: s(70),
+        maxWidth: s(120),
       ),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: pillPaddingH, vertical: pillPaddingV),
@@ -195,8 +195,8 @@ class _TypePill extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: s(14),
-              width: s(14),
+              height: s(18),
+              width: s(18),
               child: CachedNetworkImage(
                 imageUrl: imageUrl,
                 httpHeaders: const {
@@ -219,8 +219,8 @@ class _TypePill extends StatelessWidget {
                   capitalize(name),
                   style: TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: s(11),
+                    fontWeight: FontWeight.w700,
+                    fontSize: s(16),
                     letterSpacing: 0.2 * scale,
                   ),
                   maxLines: 1,
