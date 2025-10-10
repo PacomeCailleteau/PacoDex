@@ -49,64 +49,56 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final cubit = context.read<PokemonsCubit>();
 
-    return WillPopScope(
-      onWillPop: () async {
-        if (cubit.lastFetchType != FetchType.generation || cubit.lastGeneration != 1) {
-          cubit.fetchPokemonsByGeneration(1);
-          return false;
-        }
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: GestureDetector(
-            onTap: () => cubit.fetchPokemonsByGeneration(1),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image.asset('assets/images/pacodex_logo.png', height: 32),
-                ),
-                const SizedBox(width: 12),
-                Text(widget.title),
-              ],
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: GestureDetector(
+          onTap: () => cubit.fetchPokemonsByGeneration(1),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.asset(
+                    'assets/images/pacodex_logo.png', height: 32),
+              ),
+              const SizedBox(width: 12),
+              Text(widget.title),
+            ],
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SettingsPage()),
-                );
-              },
-              tooltip: 'Paramètres',
-            ),
-          ],
         ),
-        body: BlocBuilder<PokemonsCubit, PokemonsState>(
-          builder: (context, state) {
-            if (state is PokemonsLoading || state is PokemonsInitial) {
-              return _buildGridView(context, [], isLoading: true);
-            }
-            if (state is PokemonsLoaded) {
-              if (state.pokemons.isEmpty) {
-                return const EmptyStateWidget(
-                  message: 'Aucun Pokémon trouvé pour cette recherche.',
-                );
-              }
-              return _buildGridView(context, state.pokemons);
-            }
-            if (state is PokemonsError) {
-              return Center(child: Text(state.message));
-            }
-            return _buildGridView(context, [], isLoading: true);
-          },
-        ),
-        floatingActionButton: _buildFloatingActionButton(context),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsPage()),
+              );
+            },
+            tooltip: 'Paramètres',
+          ),
+        ],
       ),
+      body: BlocBuilder<PokemonsCubit, PokemonsState>(
+        builder: (context, state) {
+          if (state is PokemonsLoading || state is PokemonsInitial) {
+            return _buildGridView(context, [], isLoading: true);
+          }
+          if (state is PokemonsLoaded) {
+            if (state.pokemons.isEmpty) {
+              return const EmptyStateWidget(
+                message: 'Aucun Pokémon trouvé pour cette recherche.',
+              );
+            }
+            return _buildGridView(context, state.pokemons);
+          }
+          if (state is PokemonsError) {
+            return Center(child: Text(state.message));
+          }
+          return _buildGridView(context, [], isLoading: true);
+        },
+      ),
+      floatingActionButton: _buildFloatingActionButton(context),
     );
   }
 
@@ -165,7 +157,7 @@ class _HomeState extends State<Home> {
                       MaterialPageRoute(
                         builder: (_) => PokemonDetailsPage(pokemon: pokemon),
                       ),
-                    ).then((_) => context.read<PokemonsCubit>().refreshCurrentView());
+                    );
                   },
                 ),
               ),
@@ -233,10 +225,7 @@ class _HomeState extends State<Home> {
                     child: const FavoritesPage(),
                   ),
                 ),
-              ).then((_) {
-                // When coming back from favorites, refresh the home screen to its previous state
-                context.read<PokemonsCubit>().refreshCurrentView();
-              });
+              );
             },
           ),
           SpeedDialChild(

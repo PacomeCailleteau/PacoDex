@@ -33,15 +33,15 @@ class PokemonCardWidget extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              typeColor.withOpacity(0.92),
-              typeColor.withOpacity(0.70),
+              typeColor.withOpacity(0.95),
+              typeColor.withOpacity(0.65),
             ],
           ),
           boxShadow: [
             BoxShadow(
-              color: typeColor.withOpacity(0.35),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              color: typeColor.withOpacity(0.40),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
             ),
           ],
         ),

@@ -14,7 +14,7 @@ class PokemonQuiz {
 }
 
 
-enum FetchType { generation, type, favorites, search }
+enum FetchType { generation, type, search }
 
 class PokemonsCubit extends Cubit<PokemonsState> {
   final PokemonService _pokemonService;
@@ -79,24 +79,16 @@ class PokemonsCubit extends Cubit<PokemonsState> {
     }
   }
 
-  Future<void> fetchFavoritePokemons() async {
-    emit(PokemonsLoading());
-    try {
-      final favoriteIds = await _favoritesService.getFavoriteIds();
-      final pokemons = _fullPokemonList.where((p) => favoriteIds.contains(p.id)).toList();
-      final favoritePokemons = await _applyFavoritesStatus(pokemons);
-      // Do not update the _pokemonsForCurrentFilter here, as this is a separate view
-      emit(PokemonsLoaded(favoritePokemons));
-    } catch (e) {
-      emit(PokemonsError(e.toString()));
-    }
+  Future<void> refreshFavoritesStatus() async {
+    final updatedPokemons = await _applyFavoritesStatus(_pokemonsForCurrentFilter);
+    _pokemonsForCurrentFilter = updatedPokemons;
+    emit(PokemonsLoaded(updatedPokemons));
   }
 
   Future<void> refreshCurrentView() async {
     if (state is PokemonsLoading) return;
 
     switch (_lastFetchType) {
-      // No 'favorites' case here, because we don't want to change the main screen's state
       case FetchType.generation:
         await fetchPokemonsByGeneration(_lastGeneration);
         break;
@@ -107,7 +99,7 @@ class PokemonsCubit extends Cubit<PokemonsState> {
         await searchPokemons(_lastSearchQuery);
         break;
       default:
-        await fetchPokemonsByGeneration(1); // Fallback to the default view
+        await fetchPokemonsByGeneration(1);
     }
   }
 
@@ -153,12 +145,5 @@ class PokemonsCubit extends Cubit<PokemonsState> {
     final correctPokemon = options[random.nextInt(4)];
     options.shuffle();
     return PokemonQuiz(correctPokemon: correctPokemon, options: options);
-  }
-
-  Future<void> toggleFavorite(Pokemon pokemon) async {
-    await _favoritesService.toggleFavorite(pokemon.id);
-    final updatedPokemons = await _applyFavoritesStatus(_pokemonsForCurrentFilter);
-    _pokemonsForCurrentFilter = updatedPokemons;
-    emit(PokemonsLoaded(updatedPokemons));
   }
 }

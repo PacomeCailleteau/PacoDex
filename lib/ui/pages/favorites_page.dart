@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pokedex_app/data/model/pokemon.model.dart';
-import 'package:pokedex_app/ui/cubits/pokemons.cubit.dart';
-import 'package:pokedex_app/ui/cubits/pokemons.state.dart';
+import 'package:pokedex_app/ui/cubits/favorites.cubit.dart';
+import 'package:pokedex_app/ui/cubits/favorites.state.dart';
 import 'package:pokedex_app/ui/widgets/empty_state.widget.dart';
 import 'package:pokedex_app/ui/widgets/pokemon_card.widget.dart';
 import 'package:pokedex_app/ui/pages/pokemon_details.page.dart';
@@ -20,7 +20,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   @override
   void initState() {
     super.initState();
-    context.read<PokemonsCubit>().fetchFavoritePokemons();
+    context.read<FavoritesCubit>().fetchFavoritePokemons();
   }
 
   @override
@@ -29,29 +29,22 @@ class _FavoritesPageState extends State<FavoritesPage> {
       appBar: AppBar(
         title: const Text('Mes favoris'),
       ),
-      body: BlocBuilder<PokemonsCubit, PokemonsState>(
+      body: BlocBuilder<FavoritesCubit, FavoritesState>(
         builder: (context, state) {
-          if (state is PokemonsLoading || state is PokemonsInitial) {
-            return _buildGridView(context, [], isLoading: true);
-          }
-
-          if (state is PokemonsLoaded) {
-            final favoritePokemons = state.pokemons.where((p) => p.isFavorite).toList();
-
-            if (favoritePokemons.isEmpty) {
-              return const EmptyStateWidget(
-                message: 'Vous n\'avez pas encore de Pokémon favoris. Appuyez sur le cœur dans les détails d\'un Pokémon pour l\'ajouter ici !',
-              );
-            }
-
-            return _buildGridView(context, favoritePokemons);
-          }
-
-          if (state is PokemonsError) {
-            return Center(child: Text(state.message));
-          }
-
-          return const Center(child: CircularProgressIndicator());
+          return switch (state) {
+            FavoritesInitial() ||
+            FavoritesLoading() =>
+              _buildGridView(context, [], isLoading: true),
+            FavoritesError(message: final message) =>
+              Center(child: Text(message)),
+            FavoritesLoaded(pokemons: final pokemons) =>
+              pokemons.isEmpty
+                  ? const EmptyStateWidget(
+                      message:
+                          'Vous n\'avez pas encore de Pokémon favoris. Appuyez sur le cœur dans les détails d\'un Pokémon pour l\'ajouter ici !',
+                    )
+                  : _buildGridView(context, pokemons),
+          };
         },
       ),
     );
@@ -112,7 +105,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       MaterialPageRoute(
                         builder: (_) => PokemonDetailsPage(pokemon: pokemon),
                       ),
-                    ).then((_) => context.read<PokemonsCubit>().fetchFavoritePokemons());
+                    ).then((_) => context.read<FavoritesCubit>().fetchFavoritePokemons());
                   },
                 ),
               ),
