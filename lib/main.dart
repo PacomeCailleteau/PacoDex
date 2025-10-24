@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokedex_app/features/favorites/data/favorites.service.dart';
 import 'package:pokedex_app/features/pokemon/data/pokemon.service.dart';
-import 'package:pokedex_app/features/favorites/presentation/cubits/favorites.cubit.dart';
 import 'package:pokedex_app/features/pokemon/presentation/cubits/pokemons.cubit.dart';
 import 'package:pokedex_app/core/theme/theme.cubit.dart';
 import 'package:pokedex_app/features/dashboard/presentation/pages/home.page.dart';
@@ -25,9 +24,6 @@ class MyPokedexApp extends StatelessWidget {
         BlocProvider(create: (_) => ThemeCubit()),
         BlocProvider(
           create: (_) => PokemonsCubit(PokemonService(), FavoritesService()),
-        ),
-        BlocProvider(
-          create: (_) => FavoritesCubit(FavoritesService(), PokemonService()),
         ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(

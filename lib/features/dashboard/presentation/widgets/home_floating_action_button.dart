@@ -66,10 +66,7 @@ class HomeFloatingActionButton extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => BlocProvider.value(
-                    value: context.read<PokemonsCubit>(),
-                    child: const FavoritesPage(),
-                  ),
+                  builder: (_) => const FavoritesPage(),
                 ),
               );
             },

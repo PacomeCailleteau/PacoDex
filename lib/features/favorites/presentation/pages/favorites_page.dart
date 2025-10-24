@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pokedex_app/features/favorites/data/favorites.service.dart';
+import 'package:pokedex_app/features/pokemon/data/pokemon.service.dart';
 import 'package:pokedex_app/features/favorites/presentation/cubits/favorites.cubit.dart';
 import 'package:pokedex_app/features/favorites/presentation/cubits/favorites.state.dart';
 import 'package:pokedex_app/core/widgets/empty_state.widget.dart';
@@ -13,10 +15,19 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
+  late final FavoritesCubit _favoritesCubit;
+
   @override
   void initState() {
     super.initState();
-    context.read<FavoritesCubit>().fetchFavoritePokemons();
+    _favoritesCubit = FavoritesCubit(FavoritesService(), PokemonService());
+    _favoritesCubit.fetchFavoritePokemons();
+  }
+
+  @override
+  void dispose() {
+    _favoritesCubit.close();
+    super.dispose();
   }
 
   @override
@@ -26,6 +37,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
         title: const Text('Mes favoris'),
       ),
       body: BlocBuilder<FavoritesCubit, FavoritesState>(
+        bloc: _favoritesCubit,
         builder: (context, state) {
           return switch (state) {
             FavoritesInitial() ||

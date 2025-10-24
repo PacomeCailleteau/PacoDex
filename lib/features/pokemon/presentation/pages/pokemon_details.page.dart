@@ -11,36 +11,31 @@ import 'package:pokedex_app/core/utils/color.utils.dart';
 import 'package:pokedex_app/features/pokemon/presentation/widgets/pokemon_details_container.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
-class PokemonDetailsPage extends StatelessWidget {
+class PokemonDetailsPage extends StatefulWidget {
   final Pokemon pokemon;
 
   const PokemonDetailsPage({super.key, required this.pokemon});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PokemonDetailsCubit(PokemonService(), FavoritesService())..loadPokemonDetails(pokemon),
-      child: _PokemonDetailsView(basePokemon: pokemon),
-    );
-  }
+  State<PokemonDetailsPage> createState() => _PokemonDetailsPageState();
 }
 
-class _PokemonDetailsView extends StatefulWidget {
-  final Pokemon basePokemon;
-
-  const _PokemonDetailsView({required this.basePokemon});
+class _PokemonDetailsPageState extends State<PokemonDetailsPage> {
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  late final PokemonDetailsCubit _pokemonDetailsCubit;
+  bool _showShiny = false;
 
   @override
-  State<_PokemonDetailsView> createState() => _PokemonDetailsViewState();
-}
-
-class _PokemonDetailsViewState extends State<_PokemonDetailsView> {
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  bool _showShiny = false;
+  void initState() {
+    super.initState();
+    _pokemonDetailsCubit = PokemonDetailsCubit(PokemonService(), FavoritesService());
+    _pokemonDetailsCubit.loadPokemonDetails(widget.pokemon);
+  }
 
   @override
   void dispose() {
     _audioPlayer.dispose();
+    _pokemonDetailsCubit.close();
     super.dispose();
   }
 
@@ -69,12 +64,13 @@ class _PokemonDetailsViewState extends State<_PokemonDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryType = widget.basePokemon.apiTypes.isNotEmpty ? widget.basePokemon.apiTypes[0].name : '';
+    final primaryType = widget.pokemon.apiTypes.isNotEmpty ? widget.pokemon.apiTypes[0].name : '';
     final backgroundColor = getColorForType(primaryType);
 
     return BlocBuilder<PokemonDetailsCubit, PokemonDetailsState>(
+      bloc: _pokemonDetailsCubit,
       builder: (context, state) {
-        final pokemonForDisplay = (state is PokemonDetailsLoaded) ? state.pokemon : widget.basePokemon;
+        final pokemonForDisplay = (state is PokemonDetailsLoaded) ? state.pokemon : widget.pokemon;
         final isFavorite = (state is PokemonDetailsLoaded) ? state.pokemon.isFavorite : false;
 
         return Scaffold(
@@ -102,7 +98,7 @@ class _PokemonDetailsViewState extends State<_PokemonDetailsView> {
                     isFavorite ? Icons.favorite : Icons.favorite_border,
                     color: Colors.white,
                   ),
-                  onPressed: () => context.read<PokemonDetailsCubit>().toggleFavorite(),
+                  onPressed: () => _pokemonDetailsCubit.toggleFavorite(),
                   tooltip: isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris',
                 ),
             ],
@@ -140,14 +136,14 @@ class _PokemonDetailsViewState extends State<_PokemonDetailsView> {
                   PokemonDetailsInitial() ||
                   PokemonDetailsLoading() =>
                     PokemonDetailsContainer(
-                      pokemon: widget.basePokemon,
+                      pokemon: widget.pokemon,
                       isLoading: true,
                       playSound: _playSound,
                       navigateToPokemon: _navigateToPokemon,
                     ),
                   PokemonDetailsError(message: final error) =>
                     PokemonDetailsContainer(
-                      pokemon: widget.basePokemon,
+                      pokemon: widget.pokemon,
                       error: error,
                       playSound: _playSound,
                       navigateToPokemon: _navigateToPokemon,
