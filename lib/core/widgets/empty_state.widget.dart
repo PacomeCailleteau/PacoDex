@@ -19,7 +19,7 @@ class EmptyStateWidget extends StatelessWidget {
             Image.asset(
               'assets/images/sad_pokemon.png',
               height: 120,
-              color: Colors.grey.withOpacity(0.5),
+              color: Colors.grey.withAlpha(128),
             ),
             const SizedBox(height: 24),
             Text(

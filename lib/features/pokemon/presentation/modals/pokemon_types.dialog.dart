@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pokedex_app/features/pokemon/data/pokemon.service.dart';
@@ -107,8 +106,8 @@ class _PokemonTypesDialogState extends State<PokemonTypesDialog> {
                                           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
                                         },
                                         placeholder: (context, url) => Shimmer.fromColors(
-                                          baseColor: Colors.white.withOpacity(0.5),
-                                          highlightColor: Colors.white.withOpacity(0.9),
+                                          baseColor: Colors.white.withAlpha(128),
+                                          highlightColor: Colors.white.withAlpha(230),
                                           child: Container(color: Colors.transparent, height: 25, width: 25),
                                         ),
                                         errorWidget: (context, url, error) => const SizedBox(height: 25),

@@ -63,6 +63,6 @@ class OptionsGrid extends StatelessWidget {
     if (pokemon == selectedPokemon) {
       return Colors.red;
     }
-    return Colors.grey.withOpacity(0.5);
+    return Colors.grey.withAlpha(128);
   }
 }

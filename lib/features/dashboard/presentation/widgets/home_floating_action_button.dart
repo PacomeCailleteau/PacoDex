@@ -90,6 +90,8 @@ class HomeFloatingActionButton extends StatelessWidget {
                 },
               );
 
+              if (!context.mounted) return;
+
               if (selectedType != null) {
                 context.read<PokemonsCubit>().fetchPokemonsByType(selectedType);
               }
@@ -110,6 +112,8 @@ class HomeFloatingActionButton extends StatelessWidget {
                   return const PokemonGenerationsDialog();
                 },
               );
+
+              if (!context.mounted) return;
 
               if (selectedGeneration != null) {
                 context.read<PokemonsCubit>().fetchPokemonsByGeneration(selectedGeneration);

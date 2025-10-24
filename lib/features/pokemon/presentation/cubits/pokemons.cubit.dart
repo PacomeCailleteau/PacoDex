@@ -98,9 +98,7 @@ class PokemonsCubit extends Cubit<PokemonsState> {
       case FetchType.search:
         await searchPokemons(_lastSearchQuery);
         break;
-      default:
-        await fetchPokemonsByGeneration(1);
-    }
+      }
   }
 
   Future<void> searchPokemons(String query) async {

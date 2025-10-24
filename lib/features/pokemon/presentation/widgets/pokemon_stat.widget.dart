@@ -41,7 +41,7 @@ class PokemonStatWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               child: LinearProgressIndicator(
                 value: ratio,
-                backgroundColor: color.withOpacity(0.2),
+                backgroundColor: color.withAlpha(51),
                 color: color,
                 minHeight: 10,
               ),

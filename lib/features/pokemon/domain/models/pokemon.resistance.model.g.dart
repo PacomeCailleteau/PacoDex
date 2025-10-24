@@ -9,13 +9,13 @@ part of 'pokemon.resistance.model.dart';
 PokemonResistance _$PokemonResistanceFromJson(Map<String, dynamic> json) =>
     PokemonResistance(
       name: json['name'] as String? ?? '',
-      damage_multiplier: (json['damage_multiplier'] as num?)?.toDouble() ?? 1.0,
-      damage_relation: json['damage_relation'] as String? ?? '',
+      damageMultiplier: (json['damage_multiplier'] as num?)?.toDouble() ?? 1.0,
+      damageRelation: json['damage_relation'] as String? ?? '',
     );
 
 Map<String, dynamic> _$PokemonResistanceToJson(PokemonResistance instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'damage_multiplier': instance.damage_multiplier,
-      'damage_relation': instance.damage_relation,
+      'damage_multiplier': instance.damageMultiplier,
+      'damage_relation': instance.damageRelation,
     };

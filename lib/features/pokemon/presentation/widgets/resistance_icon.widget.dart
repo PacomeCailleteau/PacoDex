@@ -14,9 +14,9 @@ class ResistanceIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = getColorForType(resistance.name.toLowerCase());
     Color multiplierColor;
-    if (resistance.damage_multiplier > 1) {
+    if (resistance.damageMultiplier > 1) {
       multiplierColor = Colors.red;
-    } else if (resistance.damage_multiplier < 1) {
+    } else if (resistance.damageMultiplier < 1) {
       multiplierColor = Colors.green;
     } else {
       multiplierColor = Theme.of(context).textTheme.bodyLarge?.color ?? (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black);
@@ -49,7 +49,7 @@ class ResistanceIcon extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          'x${resistance.damage_multiplier}',
+          'x${resistance.damageMultiplier}',
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.bold,

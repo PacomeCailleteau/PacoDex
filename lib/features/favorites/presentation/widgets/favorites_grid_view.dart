@@ -63,13 +63,15 @@ class FavoritesGridView extends StatelessWidget {
               child: FadeInAnimation(
                 child: PokemonCardWidget(
                   pokemon: pokemon,
-                  onTap: () {
-                    Navigator.push(
+                  onTap: () async {
+                    await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => PokemonDetailsPage(pokemon: pokemon),
                       ),
-                    ).then((_) => context.read<FavoritesCubit>().fetchFavoritePokemons());
+                    );
+                    if (!context.mounted) return;
+                    context.read<FavoritesCubit>().fetchFavoritePokemons();
                   },
                 ),
               ),

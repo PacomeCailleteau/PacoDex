@@ -27,7 +27,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
     try {
       await _loadFullPokemonList();
       if (_fullPokemonList.isEmpty && state is! FavoritesError) {
-        emit(FavoritesError("La liste des Pokémon n\'a pas pu être chargée."));
+        emit(FavoritesError("La liste des Pokémon n'a pas pu être chargée."));
         return;
       }
 

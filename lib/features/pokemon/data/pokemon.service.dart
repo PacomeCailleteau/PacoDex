@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:pokedex_app/features/pokemon/domain/models/pokemon.model.dart';
 import 'package:pokedex_app/features/pokemon/domain/models/pokemon.type.model.dart';
@@ -16,16 +17,16 @@ class PokemonService {
 
       if (response.statusCode == 200) {
         await prefs.setString(cacheKey, response.body);
-        print("Fetched and cached from $url");
+        debugPrint("Fetched and cached from $url");
         return response.body;
       } else {
         throw Exception('API returned status ${response.statusCode}');
       }
     } catch (e) {
-      print("Network failed for $url: $e. Trying cache.");
+      debugPrint("Network failed for $url: $e. Trying cache.");
       final cachedResponse = prefs.getString(cacheKey);
       if (cachedResponse != null) {
-        print("Loaded from cache for key $cacheKey");
+        debugPrint("Loaded from cache for key $cacheKey");
         return cachedResponse;
       } else {
         throw Exception(
@@ -42,7 +43,7 @@ class PokemonService {
         await prefs.remove(key);
       }
     }
-    print("API cache cleared.");
+    debugPrint("API cache cleared.");
   }
 
   Future<Pokemon> getPokemon(String query) async {
@@ -75,8 +76,8 @@ class PokemonService {
             .get(Uri.parse('$_internationalApiBaseUrl/pokemon/${pokemon.id}'));
         final pokeApiData = json.decode(pokeApiResponse.body);
 
-        final height = (pokeApiData['height'] / 10).toString() + ' m';
-        final weight = (pokeApiData['weight'] / 10).toString() + ' kg';
+        final height = '${pokeApiData['height'] / 10} m';
+        final weight = '${pokeApiData['weight'] / 10} kg';
         final cry = pokeApiData['cries']?['latest'];
 
         pokemon = pokemon.copyWith(
@@ -86,7 +87,7 @@ class PokemonService {
           cry: cry,
         );
       } catch (e) {
-        print("Could not fetch international data for ${pokemon.name}: $e");
+        debugPrint("Could not fetch international data for ${pokemon.name}: $e");
       }
 
       final pokemonJsonString = json.encode(pokemon.toJson());

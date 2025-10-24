@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pokedex_app/features/pokemon/domain/models/pokemon.model.dart';
 import 'package:pokedex_app/core/utils/color.utils.dart';
@@ -33,13 +32,13 @@ class PokemonCardWidget extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              typeColor.withOpacity(0.95),
-              typeColor.withOpacity(0.65),
+              typeColor.withAlpha(242),
+              typeColor.withAlpha(166),
             ],
           ),
           boxShadow: [
             BoxShadow(
-              color: typeColor.withOpacity(0.40),
+              color: typeColor.withAlpha(102),
               blurRadius: 12,
               offset: const Offset(0, 6),
             ),
@@ -67,7 +66,7 @@ class PokemonCardWidget extends StatelessWidget {
             );
             final idStyle = TextStyle(
               fontSize: s(24),
-              color: Colors.white.withOpacity(0.92),
+              color: Colors.white.withAlpha(235),
               fontWeight: FontWeight.w600,
               letterSpacing: 0.4 * scale,
             );
@@ -153,15 +152,15 @@ class PokemonCardWidget extends StatelessWidget {
                                     },
                                     filterQuality: FilterQuality.high,
                                     placeholder: (context, url) => Shimmer.fromColors(
-                                      baseColor: Colors.white.withOpacity(0.5),
-                                      highlightColor: Colors.white.withOpacity(0.9),
+                                      baseColor: Colors.white.withAlpha(128),
+                                      highlightColor: Colors.white.withAlpha(230),
                                       child: Container(
                                         color: Colors.transparent,
                                       ),
                                     ),
                                     errorWidget: (context, url, error) => Icon(
                                       Icons.image_not_supported,
-                                      color: Colors.white.withOpacity(0.85),
+                                      color: Colors.white.withAlpha(217),
                                       size: s(100),
                                     ),
                                   ),
@@ -202,7 +201,7 @@ class _TypePill extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(s(20)),
         border: Border.all(
-          color: Colors.white.withOpacity(0.55),
+          color: Colors.white.withAlpha(140),
           width: 1,
         ),
       ),
@@ -220,8 +219,8 @@ class _TypePill extends StatelessWidget {
               },
               color: Colors.white,
               placeholder: (context, url) => Shimmer.fromColors(
-                baseColor: Colors.white.withOpacity(0.5),
-                highlightColor: Colors.white.withOpacity(0.9),
+                baseColor: Colors.white.withAlpha(128),
+                highlightColor: Colors.white.withAlpha(230),
                 child: Container(color: Colors.transparent),
               ),
               errorWidget: (context, url, error) => const SizedBox(),
