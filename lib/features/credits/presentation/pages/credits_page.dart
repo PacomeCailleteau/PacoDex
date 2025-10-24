@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:pokedex_app/features/credits/presentation/widgets/credit_tile.dart';
 
 class CreditsPage extends StatelessWidget {
   const CreditsPage({super.key});
-
-  void _launchURL(String url) async {
-    final Uri uri = Uri.parse(url);
-    if (!await launchUrl(uri)) {
-      throw 'Could not launch $url';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,23 +19,20 @@ class CreditsPage extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          _buildCreditTile(
-            context,
-            'PokéAPI',
-            'Pour les données complètes sur les Pokémon.',
-            'https://pokeapi.co/',
+          const CreditTile(
+            title: 'PokéAPI',
+            subtitle: 'Pour les données complètes sur les Pokémon.',
+            url: 'https://pokeapi.co/',
           ),
-          _buildCreditTile(
-            context,
-            'PokéBuild API',
-            'Pour les données en français et les sprites.',
-            'https://pokebuildapi.fr/',
+          const CreditTile(
+            title: 'PokéBuild API',
+            subtitle: 'Pour les données en français et les sprites.',
+            url: 'https://pokebuildapi.fr/',
           ),
-          _buildCreditTile(
-            context,
-            'Flutter',
-            'Le framework qui a rendu cette application possible.',
-            'https://flutter.dev/',
+          const CreditTile(
+            title: 'Flutter',
+            subtitle: 'Le framework qui a rendu cette application possible.',
+            url: 'https://flutter.dev/',
           ),
           const Divider(height: 32),
           Text(
@@ -52,15 +42,6 @@ class CreditsPage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildCreditTile(BuildContext context, String title, String subtitle, String url) {
-    return ListTile(
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(subtitle),
-      trailing: const Icon(Icons.open_in_new),
-      onTap: () => _launchURL(url),
     );
   }
 }

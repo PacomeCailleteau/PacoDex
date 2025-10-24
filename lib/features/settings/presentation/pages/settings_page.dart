@@ -1,10 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:pokedex_app/features/pokemon/data/pokemon.service.dart';
 import 'package:pokedex_app/core/theme/theme.cubit.dart';
 import 'package:pokedex_app/features/credits/presentation/pages/credits_page.dart';
+import 'package:pokedex_app/features/pokemon/data/pokemon.service.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -26,27 +25,30 @@ class SettingsPage extends StatelessWidget {
             ),
             TextButton(
               child: const Text('Vider'),
-              onPressed: () async {
-                await PokemonService().clearCache();
-                await DefaultCacheManager().emptyCache();
-
-                if (dialogContext.mounted) {
-                  Navigator.of(dialogContext).pop();
-                }
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Le cache a été vidé.'),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                }
-              },
+              onPressed: () => _onClearCachePressed(context, dialogContext),
             ),
           ],
         );
       },
     );
+  }
+
+  Future<void> _onClearCachePressed(
+      BuildContext context, BuildContext dialogContext) async {
+    await PokemonService().clearCache();
+    await DefaultCacheManager().emptyCache();
+
+    if (dialogContext.mounted) {
+      Navigator.of(dialogContext).pop();
+    }
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Le cache a été vidé.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   @override
@@ -69,34 +71,49 @@ class SettingsPage extends StatelessWidget {
               builder: (context, currentThemeMode) {
                 return Column(
                   children: [
-                    RadioListTile<ThemeMode>(
+                    ListTile(
                       title: const Text('Clair'),
-                      value: ThemeMode.light,
-                      groupValue: currentThemeMode,
-                      onChanged: (ThemeMode? value) {
-                        if (value != null) {
-                          context.read<ThemeCubit>().setTheme(value);
-                        }
+                      leading: Radio<ThemeMode>(
+                        value: ThemeMode.light,
+                        groupValue: currentThemeMode,
+                        onChanged: (ThemeMode? value) {
+                          if (value != null) {
+                            context.read<ThemeCubit>().setTheme(value);
+                          }
+                        },
+                      ),
+                      onTap: () {
+                        context.read<ThemeCubit>().setTheme(ThemeMode.light);
                       },
                     ),
-                    RadioListTile<ThemeMode>(
+                    ListTile(
                       title: const Text('Sombre'),
-                      value: ThemeMode.dark,
-                      groupValue: currentThemeMode,
-                      onChanged: (ThemeMode? value) {
-                        if (value != null) {
-                          context.read<ThemeCubit>().setTheme(value);
-                        }
+                      leading: Radio<ThemeMode>(
+                        value: ThemeMode.dark,
+                        groupValue: currentThemeMode,
+                        onChanged: (ThemeMode? value) {
+                          if (value != null) {
+                            context.read<ThemeCubit>().setTheme(value);
+                          }
+                        },
+                      ),
+                      onTap: () {
+                        context.read<ThemeCubit>().setTheme(ThemeMode.dark);
                       },
                     ),
-                    RadioListTile<ThemeMode>(
+                    ListTile(
                       title: const Text('Système'),
-                      value: ThemeMode.system,
-                      groupValue: currentThemeMode,
-                      onChanged: (ThemeMode? value) {
-                        if (value != null) {
-                          context.read<ThemeCubit>().setTheme(value);
-                        }
+                      leading: Radio<ThemeMode>(
+                        value: ThemeMode.system,
+                        groupValue: currentThemeMode,
+                        onChanged: (ThemeMode? value) {
+                          if (value != null) {
+                            context.read<ThemeCubit>().setTheme(value);
+                          }
+                        },
+                      ),
+                      onTap: () {
+                        context.read<ThemeCubit>().setTheme(ThemeMode.system);
                       },
                     ),
                   ],
@@ -112,7 +129,8 @@ class SettingsPage extends StatelessWidget {
             const SizedBox(height: 16),
             ListTile(
               title: const Text('Vider le cache'),
-              subtitle: const Text('Supprime les données et images stockées sur votre appareil.'),
+              subtitle: const Text(
+                  'Supprime les données et images stockées sur votre appareil.'),
               leading: const Icon(Icons.delete_sweep),
               onTap: () => _showClearCacheDialog(context),
             ),
