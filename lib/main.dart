@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pokedex_app/data/api/favorites.service.dart';
-import 'package:pokedex_app/data/api/pokemon.service.dart';
-import 'package:pokedex_app/ui/cubits/favorites.cubit.dart';
-import 'package:pokedex_app/ui/cubits/pokemons.cubit.dart';
-import 'package:pokedex_app/ui/cubits/theme.cubit.dart';
-import 'package:pokedex_app/ui/pages/home.page.dart';
-import 'package:pokedex_app/ui/theme/app_theme.dart';
+import 'package:pokedex_app/features/favorites/data/favorites.service.dart';
+import 'package:pokedex_app/features/pokemon/data/pokemon.service.dart';
+import 'package:pokedex_app/features/favorites/presentation/cubits/favorites.cubit.dart';
+import 'package:pokedex_app/features/pokemon/presentation/cubits/pokemons.cubit.dart';
+import 'package:pokedex_app/core/theme/theme.cubit.dart';
+import 'package:pokedex_app/features/dashboard/presentation/pages/home.page.dart';
+import 'package:pokedex_app/core/theme/app_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
