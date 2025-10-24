@@ -1,5 +1,3 @@
-import 'package:pokedex_app/features/pokemon/domain/models/pokemon.model.dart';
-
 sealed class FavoritesState {}
 
 class FavoritesInitial extends FavoritesState {}
@@ -7,9 +5,9 @@ class FavoritesInitial extends FavoritesState {}
 class FavoritesLoading extends FavoritesState {}
 
 class FavoritesLoaded extends FavoritesState {
-  final List<Pokemon> pokemons;
+  final List<int> pokemonIds;
 
-  FavoritesLoaded(this.pokemons);
+  FavoritesLoaded(this.pokemonIds);
 }
 
 class FavoritesError extends FavoritesState {

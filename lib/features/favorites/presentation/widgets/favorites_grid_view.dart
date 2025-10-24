@@ -5,13 +5,11 @@ import 'package:pokedex_app/features/favorites/presentation/cubits/favorites.cub
 import 'package:pokedex_app/features/pokemon/domain/models/pokemon.model.dart';
 import 'package:pokedex_app/features/pokemon/presentation/pages/pokemon_details.page.dart';
 import 'package:pokedex_app/features/pokemon/presentation/widgets/pokemon_card.widget.dart';
-import 'package:pokedex_app/features/pokemon/presentation/widgets/pokemon_card_skeleton.widget.dart';
 
 class FavoritesGridView extends StatelessWidget {
   final List<Pokemon> pokemons;
-  final bool isLoading;
 
-  const FavoritesGridView({super.key, required this.pokemons, this.isLoading = false});
+  const FavoritesGridView({super.key, required this.pokemons, required bool isLoading});
 
   @override
   Widget build(BuildContext context) {
@@ -25,22 +23,6 @@ class FavoritesGridView extends StatelessWidget {
     final cardWidth = (width - (horizontalPadding * 2) - crossSpacing * (crossAxisCount - 1)) / crossAxisCount;
     final desiredHeight = cardWidth * 0.68;
     final aspectRatio = cardWidth / desiredHeight;
-
-    if (isLoading) {
-      return GridView.builder(
-        padding: const EdgeInsets.all(horizontalPadding),
-        itemCount: 12,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: crossAxisCount,
-          crossAxisSpacing: crossSpacing,
-          mainAxisSpacing: 0.0,
-          childAspectRatio: aspectRatio,
-        ),
-        itemBuilder: (context, index) {
-          return const PokemonCardSkeleton();
-        },
-      );
-    }
 
     return AnimationLimiter(
       child: GridView.builder(
